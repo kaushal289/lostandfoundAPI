@@ -16,7 +16,6 @@ const registerUser = (req, res, next) => {
         bcrypt.hash(req.body.password, 10, (err, hash) => {
             if (err) next(err)
             let user = new User()
-            
             user.username = req.body.username
             user.firstName=req.body.firstName
             user.lastName=req.body.lastName
@@ -25,7 +24,11 @@ const registerUser = (req, res, next) => {
             user.email=req.body.email
             user.location=req.body.location
             user.age=req.body.age
-            user.image=req.file.filename
+            const file = req.file;
+            if(file){
+                user.image=req.file.filename
+            }
+            
             if (req.body.role) user.role = req.body.role
             user.password = hash
             user.save().then(user => {
@@ -87,7 +90,6 @@ const updateUserById = (req, res, next) => {
                 res.status(403)
                 return next(new Error('Not allowed'))
             }
-            
             user.firstName = req.body.firstName ? req.body.firstName : user.firstName
             user.lastName = req.body.lastName ? req.body.lastName : user.lastName
             user.phoneNumber = req.body.phoneNumber ? req.body.phoneNumber : user.phoneNumber
@@ -102,7 +104,6 @@ const updateUserById = (req, res, next) => {
         }).catch(next)
 }
 
-
 const getAllUsers = (req, res, next) => {
     User.find()
         .then((users) => {
@@ -110,17 +111,12 @@ const getAllUsers = (req, res, next) => {
         }).catch(next)
 }
 
-
 const deleteAllUsers = (req, res, next) => {
     User.deleteMany()
         .then((status) => {
             res.json(status)
         }).catch(next)
 }
-
-
-
-
 
 const deleteUserById = (req, res, next) => {
     User.findByIdAndDelete(req.params.user_id)

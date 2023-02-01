@@ -3,10 +3,15 @@ const express = require('express')
 const app = express()
 const path =  require('path')
 const user_routes = require('./routes/user-routes')
+const lost_routes = require('./routes/lost-routes')
+const found_routes = require('./routes/found-routes')
 const mongoose =  require("mongoose")
 const auth =require('./middleware/auth')
+const cors=require('cors')
 
-const port = process.env.PORT || 3000
+
+app.use(cors())
+const port = process.env.PORT || 3001
 
 mongoose.set('strictQuery', false);
 
@@ -31,6 +36,8 @@ app.get('^/$|/index(.html)?',(req,res)=>{
 })
 
 app.use('/users',user_routes)
+app.use('/losts',lost_routes)
+app.use('/founds',found_routes)
 
 app.use((err,req,res,next)=>{
     console.log(err.stack)
